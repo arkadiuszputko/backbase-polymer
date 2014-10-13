@@ -22,19 +22,19 @@
 
     </template>
     <template if="items" repeat="{{item in items}}">
-      <div class="item">
-        <h1 on-click="{{toggle}}" data-id="{{item.id}}">{{item.title}}</h1>
+      <div data-id="{{item.id}}" on-click="{{toggle}}" class="item">
+        <h1>{{item.title}}</h1>
         <span class="thumbnail">  
           <template if="{{item.imgUrl}}">
             <img src="{{item.imgUrl}}" />
           </template>
           <template if="{{!item.imgUrl}}">
-            <img src="dupa.png" />
+            <span>Sorry no image</span>
           </template>
         </span>
         <core-collapse id="collapse_{{item.id}}">
           <p>{{item.description}}</p>
-          <a href="{{item.link}}">link</a>
+          <a href="{{item.link}}" target="_blank">link</a>
         </core-collapse>
       </div>
     </template>
@@ -106,7 +106,6 @@
         } else {
           url = false;
         }
-        console.log(url);
         return url;
       },
 
