@@ -1,0 +1,125 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/core-collapse/core-collapse.html">
+
+<polymer-element name="b-polymer" attributes="notitle author" id="b-polymer">
+
+  <template>
+
+    <link rel="stylesheet" href="b-polymer.css">
+
+    <core-ajax url="https://pipes.yahoo.com/pipes/pipe.run?_id=2b2d66bcf6e46d1018533093a49be2ed&_render=json" auto response="{{response}}"></core-ajax>
+    <template if="!items">
+
+    </template>
+    <template if="items" repeat="{{item in items}}">
+      <div class="item">
+        <h1 on-click="{{toggle}}" data-id="{{item.id}}">{{item.title}}</h1>
+        <span class="thumbnail">  
+          <template if="{{item.imgUrl}}">
+            <img src="{{item.imgUrl}}" />
+          </template>
+          <template if="{{!item.imgUrl}}">
+            <img src="dupa.png" />
+          </template>
+        </span>
+        <core-collapse id="collapse_{{item.id}}">
+          <p>{{item.description}}</p>
+          <a href="{{item.link}}">link</a>
+        </core-collapse>
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      author: 'Arkadiusz Putko',
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+      fancy: false,
+
+      ready: function() {
+
+      },
+
+      responseChanged: function (response) {
+        if (this.response) {
+          this.items = this.decorateValues(JSON.parse(this.response)).items;
+        }
+      },
+
+      decorateValues: function (data) {
+        var output = {
+          count: data.count,
+          items: []
+        };
+        for (var i = 0; i < data.count; i++) {
+          output.items.push({
+            id: 'item_' + i,
+            title: data.value.items[i].title,
+            link: data.value.items[i].link,
+            imgUrl: this.getImageUrl(data.value.items[i]),
+            description: this.getDescription(data.value.items[i].description)
+          });
+        }
+        console.log(output);
+        return output;
+      },
+
+      getImageUrl: function (item) {
+        var url = '';
+        desc = document.createElement('div');
+        desc.innerHtml = item.description;
+        if (desc.getElementsByClassName('.feedflare')[0]) {
+          desc.getElementsByClassName('.feedflare')[0].remove();
+        }
+        if (item['media:content'] && !item['media:thumbnail']) {
+          if (item['media:content']['media:thumbnail']) {
+            url = item['media:content']['media:thumbnail'].url;
+          } else {
+            url = item['media:content'].url;
+          }
+        } else if (item['media:thumbnail']) {
+          url = item['media:thumbnail'].url;
+        } else if (desc.innerHtml.match(/src\=([^\s]*)\s/) && desc.innerHtml.match(/src\=([^\s]*)\s/).length) {
+          var src = desc.innerHtml.match(/src\=([^\s]*)\s/)[1];
+          url = src.substring(1,src.length - 1);
+          url = url.indexOf('feedburner') === -1 ? url : false;
+        } else {
+          url = false;
+        }
+        console.log(url);
+        return url;
+      },
+
+      getDescription: function (description) {
+        return description.replace(/<(?:.|\n)*?>/gm, '');
+      },
+
+      toggle: function (event, detail, target) {
+        this.shadowRoot.querySelector('#collapse_' + target.getAttribute('data-id')).toggle();
+      }
+
+    });
+
+  </script>
+
+</polymer-element>

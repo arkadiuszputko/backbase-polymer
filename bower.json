@@ -1,0 +1,29 @@
+{
+  "name": "b-polymer",
+  "version": "0.0.0",
+  "authors": [
+    "Arkadiusz Putko <arkadiusz.putko@gmail.com>"
+  ],
+  "description": "Element providing solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "seed"
+  ],
+  "main": "b-polymer.html",
+  "license": "MIT",
+  "homepage": "https://github.com/arkadiuszputko/b-polymer/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.4.1",
+    "core-ajax": "Polymer/core-ajax#~0.4.2",
+    "core-collapse": "Polymer/core-collapse#~0.4.2"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^0.7.3"
+  }
+}
